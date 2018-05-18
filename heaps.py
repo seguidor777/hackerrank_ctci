@@ -1,38 +1,47 @@
-import sys
+#!/bin/python3
 
-class Heap:
-    def __init__(self, items):
-        self.items = items
+import math
+import os
+import random
+import re
+import sys
+from bisect import insort
+
+class MedianHeap():
+    def __init__(self):
+        self.lowers = []
+        self.highers = []
         
-    def parent(self, index):
-        self.items[index - 1 / 2]
-        
-    def left_child(self, index):
-      self.items[index * 2 + 1]
+    def add(self, value):
+        if len(self.lowers) == 0 or value < self.lowers[-1]:
+            insort(self.lowers, value)
+        else:
+            insort(self.highers, value)
+            
+    def rebalance(self):
+        if len(self.lowers) > len(self.highers) + 1:
+            insort(self.highers, self.lowers.pop())
+        elif len(self.highers) > len(self.lowers) + 1:
+            insort(self.lowers, self.highers[0])
+            del self.highers[0]
     
-    def right_child(self, index):
-      self.items[index * 2 + 2]
+    def get_median(self):
+        if len(self.lowers) > len(self.highers):
+            median = float(self.lowers[-1])
+        elif len(self.highers) > len(self.lowers):
+            median = float(self.highers[0])
+        else:
+            median = (self.lowers[-1] + self.highers[0]) / 2.0
+            
+        return median
     
-    def poll(self):
-        heapify_down()
-    
-    def append(self, value):
-        heapify_up()
-    
-    def heapify_down(self):
-        pass
-    
-    def heapify_up(self):
-        pass
-    
-    def median(self):
-        pass
-    
-n = int(input().strip())
-a = []
-a_i = 0
-for a_i in range(n):
-   a_t = int(input().strip())
-   a.append(a_t)
-heap = Heap(a)
-print(heap.median())
+if __name__ == '__main__':
+    n = int(input())
+    a = MedianHeap()
+
+    for _ in range(n):
+        a_item = int(input())
+        a.add(a_item)
+        a.rebalance()
+        print(a.get_median())
+            
